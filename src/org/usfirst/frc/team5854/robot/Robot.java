@@ -248,11 +248,11 @@ public class Robot
   {
     if (go)
     {
-      this.shootermotor.setSpeed(-1.0D);
+      this.shootermotor.setSpeed(-1.0);
       if (second) {
-        this.agitatormotor.setSpeed(map(this.buttonJoystick.getThrottle(), -1.0D, 1.0D, 0.25D, 1.0D));
+        this.agitatormotor.setSpeed(map(this.buttonJoystick.getThrottle(), -1, 1, 1, .25));
       } else {
-        this.agitatormotor.setSpeed(0.0D);
+        this.agitatormotor.setSpeed(0.0);
       }
     }
     else
@@ -356,7 +356,11 @@ public class Robot
 	  double rotation = 0.0;
 	  while (rotation < desRotation) {
 		  speed = map (mecanumDrive.getEncValueRight(), 0, desRotation, 1, 0);
+		  
+		  
 		  rotation = this.mecanumDrive.getEncValueLeft();
+		  
+		  
 	      System.out.println("Rotations " + rotation);
 	      System.out.println("DesRotations " + desRotation);
 	      if (this.mecanumDrive.getEncValueLeft() > this.mecanumDrive.getEncValueRight())
