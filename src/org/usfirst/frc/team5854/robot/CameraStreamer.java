@@ -45,4 +45,5 @@ public class CameraStreamer
   {
     usbCamera.setResolution(640, 400);
   }
+  public 
 }

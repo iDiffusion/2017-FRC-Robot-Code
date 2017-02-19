@@ -57,23 +57,28 @@ public class Robot extends IterativeRobot {
 	CameraStreamer cameraserver2;
 
 	public void robotInit() {
+		//driving creation. hover to find out more.
 		mecanumDrive = new EightDrive(2, 3, 1, 4, 7, 5, 8, 6);
-		backLeftEnc = new Encoder(0, 1, false, CounterBase.EncodingType.k4X);
-		leftgearservo = new Servo(2);
+		
+		//PWM motors for non-drive mechanics.
+		harvestermotor = new VictorSP(0);
 		rightgearservo = new Servo(1);
-
+		leftgearservo = new Servo(2);
 		shootermotor = new VictorSP(3);
 		agitatormotor = new VictorSP(4);
-
 		climbermotor = new VictorSP(5);
 
-		mainJoystick = new Joystick(1);
-		buttonJoystick = new Joystick(0);
+		
+		//ports for each joystick.
+		mainJoystick = new Joystick(1); //main joy is the driving joystick
+		buttonJoystick = new Joystick(0); //button joy is the black joystick for controlling non-drive mechanics
 
 		gyro = new ADXRS450_Gyro();
 
-		harvestermotor = new VictorSP(0);
 
+		
+		
+		//smartdashboard for which autonomous method we use.
 		chooser = new SendableChooser<String>();
 		chooser.addDefault("Drive forward", "driveforward");
 		chooser.addObject("spin", "spin");
@@ -86,9 +91,13 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Objective #6", "Objective6");
 		chooser.addDefault("Objective #6 and #7", "Objective67");
 		SmartDashboard.putData("Auto choices", chooser);
+		
+		
+		//smart dashboard for which remote we are using.
 		controllerChooser = new SendableChooser<String>();
 		controllerChooser.addDefault("Calebs Controller", "caleb");
 		controllerChooser.addObject("main Joystick", "mainjoy");
+		controllerChooser.addObject("xBox Controller", "xbox");
 		SmartDashboard.putData("Choose Controller", controllerChooser);
 
 		cameraserver = new CameraStreamer(0, 1181);
@@ -96,7 +105,7 @@ public class Robot extends IterativeRobot {
 		cameraserver.setBrightness(1);
 	}
 
-	double gyroOffset = 0.0D;
+	double gyroOffset = 0;
 
 	public void autonomousInit() {
 		autoSelected = ((String) chooser.getSelected());
@@ -129,18 +138,21 @@ public class Robot extends IterativeRobot {
 			case "Objective1":
 				move(94.75, 0.5);
 				gearManager(true);
+				go = false;
 				break;
 			case "Objective2":
 				move(68.234, 0.5);
 				turnGyro('R', 30.0);
 				move(66.217, 0.5);
 				gearManager(true);
+				go = false;
 				break;
 			case "Objective3":
 				move(68.234, 0.5);
 				turnGyro('L', 30.0);
 				move(66.217, 0.5);
 				gearManager(true);
+				go = false;
 				break;
 			case "Objective4":
 				move(13.0, -0.5);
@@ -151,23 +163,33 @@ public class Robot extends IterativeRobot {
 				for (int i = 0; i < 7000; i++) {
 					shooterManager(true, true);
 				}
+				go = false;
 				break;
 			case "Objective45":
 				turnGyro('R', 148.0);
 				move(100.0, 0.5);
 				gearManager(true);
 				move(8.0, -0.5);
+				go = false;
 				break;
 			case "Objective6":
 				move(13.0, -0.5);
-				turnGyro('L', 23.0);
+				turnGyro('L', 23);
 				for (int i = 0; i < 3000; i++) {
 					shooterManager(true, false);
 				}
 				for (int i = 0; i < 7000; i++) {
 					shooterManager(true, true);
 				}
+				go = false;
 				break;
+			case "Objective67":
+				turnGyro('L', 148);
+				move(100.0, 0.5);
+				gearManager(true);
+				move(8, -0.5);
+				go = false;
+				break; 
 			}
 		}
 	}
@@ -179,26 +201,36 @@ public class Robot extends IterativeRobot {
 	double gyroAngle = 0.0;
 
 	public void teleopPeriodic() {
+		mecanumDrive.setCANTalonDriveMode(CANTalon.TalonControlMode.PercentVbus);
+
+		//sets the deadband for the drive system.
+		mecanumDrive.setDeadband(0.1);
+
+		//sets how fast you can rotate the robot
+		mecanumDrive.setTwistMultiplyer(0.3);
+
+		//sets how fast your robot strafe and drives.
+		mecanumDrive.setSpeedMultiplyer(.5);
+
+		
+		//Selects which controller we are using for driving.
 		stickSelected = ((String) controllerChooser.getSelected());
 		switch (stickSelected) {
 		case "caleb":
-			CalebsController = true;
+			mecanumDrive.mecanumDrive_Cartesian(mainJoystick.getRawAxis(1), mainJoystick.getRawAxis(2), mainJoystick.getRawAxis(3), 0);
 			break;
 		case "mainjoy":
-			CalebsController = false;
-		}
-		mecanumDrive.setCANTalonDriveMode(CANTalon.TalonControlMode.PercentVbus);
-
-		mecanumDrive.setDeadband(0.1);
-
-		mecanumDrive.setTwistMultiplyer(0.3);
-
-		mecanumDrive.setSpeedMultiplyer(.5);
-		if (CalebsController) {
-			mecanumDrive.mecanumDrive_Cartesian(mainJoystick.getRawAxis(0), mainJoystick.getRawAxis(1), mainJoystick.getRawAxis(2), 0);
-		} else {
 			mecanumDrive.mecanumDrive_Cartesian(buttonJoystick.getX(), buttonJoystick.getY(), buttonJoystick.getTwist(), 0.0);
+			break;
+		case "xbox":
+			mecanumDrive.mecanumDrive_Cartesian(mainJoystick.getRawAxis(0), mainJoystick.getRawAxis(1), mainJoystick.getRawAxis(2), 0);
 		}
+		
+		
+		
+		
+		
+		
 		gearManager(buttonJoystick.getRawButton(3));
 
 		// climberManager(buttonJoystick.getRawButton(11));

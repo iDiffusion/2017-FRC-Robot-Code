@@ -17,7 +17,16 @@ public class EightDrive
   private CANTalon rightFrontMotorTwo;
   private CANTalon leftRearMotorTwo;
   private CANTalon rightRearMotorTwo;
-  
+  /**
+   * @param leftFrontMotorOneValue
+   * @param rightFrontMotorOneValue
+   * @param leftRearMotorOneValue
+   * @param rightRearMotorOneValue
+   * @param leftFrontMotorTwoValue
+   * @param rightFrontMotorTwoValue
+   * @param leftRearMotorTwoValue
+   * @param rightRearMotorTwoValue
+   */
   public EightDrive(int leftFrontMotorOneValue, int rightFrontMotorOneValue, int leftRearMotorOneValue, int rightRearMotorOneValue, int leftFrontMotorTwoValue, int rightFrontMotorTwoValue, int leftRearMotorTwoValue, int rightRearMotorTwoValue)
   {
     leftFrontMotorOne = new CANTalon(leftFrontMotorOneValue);
