@@ -16,7 +16,7 @@ public class AutoMethods {
 	    gyroAngle = gyro.getAngle();
 	    double Angle = RoboSockets.getValue();
 	    char directionChar = 'r';
-	    if (Angle < 0.0D) {
+	    if (Angle < 0.0) {
 	      directionChar = 'L';
 	    } else {
 	      directionChar = 'R';
@@ -41,14 +41,14 @@ public class AutoMethods {
 	      System.out.println("Gyro : " + otherNumber);
 	      if ((direction == 'L') || (direction == 'l'))
 	      {
-	        mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, 1.0D);
+	        mecanumDrive.mecanumDrive_Polar(0, 0, 1);
 	        if (otherNumber < angle) {
 	          state = 2;
 	        }
 	      }
 	      else if ((direction == 'R') || (direction == 'r'))
 	      {
-	        mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, -1.0D);
+	        mecanumDrive.mecanumDrive_Polar(0, 0, -1);
 	        if (otherNumber > angle) {
 	          state = 2;
 	        }
@@ -63,19 +63,19 @@ public class AutoMethods {
 	      otherNumber = gyro.getAngle();
 	      if (otherNumber < angle)
 	      {
-	        mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, slowMotorSpeed);
+	        mecanumDrive.mecanumDrive_Polar(0, 0, slowMotorSpeed);
 	        if (otherNumber >= angle)
 	        {
-	          mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, 0.0D);
+	          mecanumDrive.mecanumDrive_Polar(0, 0, 0);
 	          state = 3;
 	        }
 	      }
 	      else if (otherNumber > angle)
 	      {
-	        mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, -slowMotorSpeed);
+	        mecanumDrive.mecanumDrive_Polar(0, 0, -slowMotorSpeed);
 	        if (otherNumber <= angle)
 	        {
-	          mecanumDrive.mecanumDrive_Polar(0.0D, 0.0D, 0.0D);
+	          mecanumDrive.mecanumDrive_Polar(0, 0, 0);
 	          state = 4;
 	        }
 	      }
@@ -137,13 +137,13 @@ public class AutoMethods {
 	    double desRotation = converstion * distance;
 	    
 	    double highSpeed = speed;
-	    double slowSpeed = speed + 0.1D;
+	    double slowSpeed = speed + .1;
 	    
 	    mecanumDrive.resetEncoders();
 	    
 	    System.out.println("Second, Run Once");
 	    
-	    double rotation = 0.0;
+	    double rotation = 0;
 	    while (rotation < desRotation)
 	    {
 	      rotation = mecanumDrive.getEncValueLeft();
@@ -165,19 +165,19 @@ public class AutoMethods {
 	        mecanumDrive.moveRightSide(highSpeed);
 	      }
 	    }
-	    while (rotation > desRotation + converstion * 4.0D)
+	    while (rotation > desRotation + converstion * 4)
 	    {
 	      rotation = mecanumDrive.getEncValueLeft();
 	      System.out.println("Rotations " + rotation);
 	      System.out.println("DesRotations " + desRotation);
 	      
-	      mecanumDrive.moveLeftSide(-0.1D);
-	      mecanumDrive.moveRightSide(-0.1D);
+	      mecanumDrive.moveLeftSide(-.1);
+	      mecanumDrive.moveRightSide(-.1);
 	    }
 	    for (int i = 0; i < 100; i++)
 	    {
-	      mecanumDrive.moveLeftSide(0.0D);
-	      mecanumDrive.moveRightSide(0.0D);
+	      mecanumDrive.moveLeftSide(0);
+	      mecanumDrive.moveRightSide(0);
 	    }
 	  }
 }

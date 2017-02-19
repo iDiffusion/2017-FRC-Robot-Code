@@ -17,32 +17,32 @@ public class CameraStreamer
   
   public CameraStreamer(int cameraId, int port)
   {
-    this.usbCamera = new UsbCamera("USB Camera 0", cameraId);
-    this.usbCamera.setResolution(640, 400);
-    this.usbCamera.setBrightness(1);
+    usbCamera = new UsbCamera("USB Camera 0", cameraId);
+    usbCamera.setResolution(640, 400);
+    usbCamera.setBrightness(1);
     
-    this.mjpegServer1 = new MjpegServer("serve_USB Camera 0", port);
+    mjpegServer1 = new MjpegServer("serve_USB Camera 0", port);
     
-    this.mjpegServer1.setSource(this.usbCamera);
+    mjpegServer1.setSource(usbCamera);
     
-    this.cvSink = new CvSink("opencv_USB Camera 0");
+    cvSink = new CvSink("opencv_USB Camera 0");
     
-    this.cvSink.setSource(this.usbCamera);
+    cvSink.setSource(usbCamera);
     
-    this.outputStream = new CvSource("Blur", VideoMode.PixelFormat.kMJPEG, 640, 480, 30);
+    outputStream = new CvSource("Blur", VideoMode.PixelFormat.kMJPEG, 640, 480, 30);
     
-    this.mjpegServer2 = new MjpegServer("serve_Blur", port + 1);
+    mjpegServer2 = new MjpegServer("serve_Blur", port + 1);
     
-    this.mjpegServer2.setSource(this.outputStream);
+    mjpegServer2.setSource(outputStream);
   }
   
   public void setBrightness(int brightness)
   {
-    this.usbCamera.setBrightness(brightness);
+    usbCamera.setBrightness(brightness);
   }
   
   public void setResolution(int width, int height)
   {
-    this.usbCamera.setResolution(640, 400);
+    usbCamera.setResolution(640, 400);
   }
 }
