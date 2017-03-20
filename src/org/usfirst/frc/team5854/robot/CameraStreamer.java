@@ -5,45 +5,62 @@ import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
-import edu.wpi.cscore.VideoMode.PixelFormat;
 
 public class CameraStreamer
 {
-  private UsbCamera usbCamera;
+  private static UsbCamera usbCamera0=  new UsbCamera("USB Camera 0", 0);
+  //private static UsbCamera usbCamera1=  new UsbCamera("USB Camera 1", 1);
+  //private static UsbCamera usbCamera2=  new UsbCamera("USB Camera 2", 2);
   private MjpegServer mjpegServer1;
   private CvSink cvSink;
   private CvSource outputStream;
   private MjpegServer mjpegServer2;
   
-  public CameraStreamer(int cameraId, int port)
+  public void setCameraNumber(int id) {
+		  mjpegServer1.setSource(usbCamera0);
+  }
+  
+//  public void setCameraNumber(int id) {
+//	  switch (id) {
+//	  case 0:
+//		  mjpegServer1.setSource(usbCamera0);
+//		  break;
+//	  case 1:
+//		  mjpegServer1.setSource(usbCamera1);
+//		  break;
+//	  case 2:
+//		  mjpegServer1.setSource(usbCamera2);
+//		  break;
+//
+//	  }
+//  }
+  
+  public CameraStreamer(int port)
   {
-    usbCamera = new UsbCamera("USB Camera 0", cameraId);
-    usbCamera.setResolution(640, 400);
-    usbCamera.setBrightness(1);
+    mjpegServer1 = new MjpegServer("serve_USB Camera " + port, port);
     
-    mjpegServer1 = new MjpegServer("serve_USB Camera 0", port);
+    cvSink = new CvSink("opencv_USB Camera " + port);
     
-    mjpegServer1.setSource(usbCamera);
-    
-    cvSink = new CvSink("opencv_USB Camera 0");
-    
-    cvSink.setSource(usbCamera);
+    cvSink.setSource(usbCamera0);
     
     outputStream = new CvSource("Blur", VideoMode.PixelFormat.kMJPEG, 640, 480, 30);
     
-    mjpegServer2 = new MjpegServer("serve_Blur", port + 1);
+    mjpegServer2 = new MjpegServer("serve_Blur " + port , port + 1);
     
     mjpegServer2.setSource(outputStream);
   }
   
-  public void setBrightness(int brightness)
+  public static void setBrightness(int brightness)
   {
-    usbCamera.setBrightness(brightness);
+	usbCamera0.setBrightness(brightness);
+//    usbCamera1.setBrightness(brightness);
+//    usbCamera2.setBrightness(brightness);
+  }  
+  public void setResolution()
+  {
+	  usbCamera0.setResolution(640, 400);
+//    usbCamera1.setResolution(640, 400);
+//    usbCamera2.setResolution(640, 400);
   }
   
-  public void setResolution(int width, int height)
-  {
-    usbCamera.setResolution(640, 400);
-  }
-  public 
 }
